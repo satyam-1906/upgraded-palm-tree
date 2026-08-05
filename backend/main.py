@@ -161,7 +161,7 @@ def extr(payload: ExtractSchema):
     combined_text = ""
     for idx, file_key in enumerate(payload.file_keys):
         file_ext = "pdf"
-        if idx < len(payload.file_type) and payload.file_type[idx]:
+        if idx < len(payload.file_type) and payload.file_type[idx] is not None:
             file_ext = payload.file_type[idx].lower().strip(".")
         else:
             # Fallback extraction from file key name if payload.file_type is missing or incomplete
