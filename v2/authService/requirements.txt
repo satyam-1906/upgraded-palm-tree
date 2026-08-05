@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+redis
+python-dotenv
+argon2-cffi
+sqlalchemy
+psycopg2-binary
+PyJWT

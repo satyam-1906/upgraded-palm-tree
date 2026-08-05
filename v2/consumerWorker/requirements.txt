@@ -1,0 +1,9 @@
+kafka-python
+langchain
+langchain-groq
+boto3
+python-dotenv
+pandas
+pymupdf
+pillow
+pytesseract

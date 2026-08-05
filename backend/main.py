@@ -56,7 +56,7 @@ app.add_middleware(CORSMiddleware,
 def get_db():
     db=sessionLocal()
     try:
-        yield db 
+        yield db
     finally:
         db.close()
 
@@ -139,18 +139,18 @@ def logi(payload: LoginSchema, response: Response, db:Session=Depends(get_db)):
             raise HTTPException(status_code=401, detail="passwords do not match")
     else:
         raise HTTPException(status_code=401, detail="verify your email")
-           
+
 @app.post("/upload")
 def upl(payload: InputSchema):
     file_id=str(uuid.uuid4())
     key=f"docs/{file_id}-{payload.file_name}"
     pres=s3.generate_presigned_url(
-        ClientMethod = 'put_object', 
+        ClientMethod = 'put_object',
         Params = {
-            'Bucket': bucket, 
-            "Key" : key, 
+            'Bucket': bucket,
+            "Key" : key,
             "ContentType": payload.content_type
-        }, 
+        },
         ExpiresIn = 600
     )
     status="uploaded"
@@ -176,8 +176,12 @@ def extr(payload: ExtractSchema):
         if len(text.strip()) < 100:
             text = extract_ocr(file_bytes, file_ext)
         combined_text += "\n\n" + text
+    dt = redis_client.get(key1)
+    if dt["text"] == hash_text(combined_text):
+        return {"normal": dt["ai_result"]}
     result = lang_app.invoke(State(content=combined_text))
     text_hash = hash_text(combined_text) #isko caching mein use karenge
+    redis_client.setex(key, {"text": text_hash, "ai_result": result["normal"]}, 86400)
     return {"csv_file": result["fin"], "normal": result["normal"]}
 
 

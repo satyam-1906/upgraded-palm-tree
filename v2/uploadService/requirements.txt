@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-kafka
+sqlalchemy
+psycopg2-binary
+boto3
+python-dotenv
+Twilio

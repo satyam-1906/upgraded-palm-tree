@@ -1,24 +1,23 @@
 from langgraph.graph import StateGraph, END
 from pydantic import BaseModel, SecretStr, Field
 from typing import Optional
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 import os
 import json
 import uuid
 import pandas as pd
 from io import StringIO
-from pydantic import SecretStr
-
-load_dotenv()
 import boto3
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+load_dotenv()
+llm = ChatGroq(
+    model="openai/gpt-oss-120b",
     temperature=0,
     max_tokens=None,
     reasoning_format="hidden",
     timeout=None,
     max_retries=2,
+    api_key=SecretStr(os.getenv("GROQ_API_KEY", "none"))
 )
 s3 = boto3.client(
     "s3",
@@ -167,3 +166,4 @@ graph.add_edge("normal", "final")
 graph.add_edge("final", END)
 
 lang_app = graph.compile()
+
